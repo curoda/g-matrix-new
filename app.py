@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import streamlit as st
 
 # Function to compute a single element of the g matrix
@@ -54,12 +55,15 @@ if st.sidebar.button("Compute"):
     # Display the computed matrices in the main app area
     for i, (g_matrix, gcc_matrix, gcc_transpose) in enumerate(zip(g_matrices, gcc_matrices, gcc_transposes)):
         st.write(f"### Set {i + 1}")
+
         st.write("#### g matrix")
-        st.write(g_matrix)
+        st.write(pd.DataFrame(g_matrix))
+
         st.write("#### Complex conjugate matrix (gcc)")
-        st.write(gcc_matrix)
+        st.write(pd.DataFrame(gcc_matrix))
+
         st.write("#### Transpose of gcc matrix")
-        st.write(gcc_transpose)
+        st.write(pd.DataFrame(gcc_transpose))
 
 # Main function to run the app (not strictly necessary for Streamlit, but good practice)
 if __name__ == "__main__":
