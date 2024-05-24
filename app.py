@@ -2,21 +2,19 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-# Function to compute a single element of the g matrix
-def compute_g_element(m, n, p, q, W):
-    angle = 2 * np.pi / W * (p * m + q * n)  # Calculate the angle for the trigonometric functions
-    g_element = np.cos(angle) - 1j * np.sin(angle)  # Compute the complex value for the g matrix element
-    return g_element
-
 # Function to compute the g matrix for multiple sets of m, n, p, q values
-def compute_g_matrices(params, W):
-    g_matrices = []
-    for param_set in params:
-        m, n, p, q = param_set
-        g_matrix = np.zeros((1, 1), dtype=complex)  # Initialize the g matrix with a single element
-        g_matrix[0, 0] = compute_g_element(m, n, p, q, W)  # Compute and assign the single element
-        g_matrices.append(g_matrix)
-    return g_matrices
+def compute_g_matrix(params, W):
+    num_rows = len(params)
+    num_cols = len(params)
+    
+    g_matrix = np.zeros((num_rows, num_cols), dtype=complex)
+    
+    for col, (p, q) in enumerate(params):
+        for row, (m, n) in enumerate(params):
+            angle = 2 * np.pi / W * (p * m + q * n)
+            g_matrix[row, col] = np.cos(angle) - 1j * np.sin(angle)
+    
+    return g_matrix
 
 # Function to compute the complex conjugate of a matrix
 def compute_complex_conjugate(matrix):
@@ -45,25 +43,22 @@ if st.sidebar.button("Compute"):
     param_lines = param_input.strip().split('\n')
     params = [tuple(map(int, line.split())) for line in param_lines]
 
-    # Compute the g matrices for all sets of parameters
-    g_matrices = compute_g_matrices(params, W)
+    # Compute the g matrix for all sets of parameters
+    g_matrix = compute_g_matrix(params, W)
 
-    # Compute the complex conjugate and transpose for each g matrix
-    gcc_matrices = [compute_complex_conjugate(g) for g in g_matrices]
-    gcc_transposes = [compute_transpose(gcc) for gcc in gcc_matrices]
+    # Compute the complex conjugate and transpose for the g matrix
+    gcc_matrix = compute_complex_conjugate(g_matrix)
+    gcc_transpose = compute_transpose(gcc_matrix)
 
     # Display the computed matrices in the main app area
-    for i, (g_matrix, gcc_matrix, gcc_transpose) in enumerate(zip(g_matrices, gcc_matrices, gcc_transposes)):
-        st.write(f"### Set {i + 1}")
+    st.write("### g matrix")
+    st.write(pd.DataFrame(g_matrix))
 
-        st.write("#### g matrix")
-        st.write(pd.DataFrame(g_matrix))
+    st.write("### Complex conjugate matrix (gcc)")
+    st.write(pd.DataFrame(gcc_matrix))
 
-        st.write("#### Complex conjugate matrix (gcc)")
-        st.write(pd.DataFrame(gcc_matrix))
-
-        st.write("#### Transpose of gcc matrix")
-        st.write(pd.DataFrame(gcc_transpose))
+    st.write("### Transpose of gcc matrix")
+    st.write(pd.DataFrame(gcc_transpose))
 
 # Main function to run the app (not strictly necessary for Streamlit, but good practice)
 if __name__ == "__main__":
