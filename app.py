@@ -42,6 +42,9 @@ param_input = st.sidebar.text_area(
 )
 W = st.sidebar.number_input("Enter W:", min_value=1, value=3)  # Input for W
 
+# File uploader for the V matrix
+v_file = st.sidebar.file_uploader("Upload the V matrix (Excel file)", type=["xlsx"])
+
 # Button to trigger the computation
 if st.sidebar.button("Compute"):
     # Parse the input values
@@ -58,15 +61,35 @@ if st.sidebar.button("Compute"):
     gcc_matrix = compute_complex_conjugate(g_matrix)
     gcc_transpose = compute_transpose(gcc_matrix)
 
-    # Display the computed matrices in the main app area
-    st.write("### g matrix")
-    st.write(pd.DataFrame(g_matrix))
+    # Check if the V matrix is uploaded
+    if v_file:
+        # Read the V matrix from the uploaded Excel file
+        v_matrix = pd.read_excel(v_file, header=None).to_numpy()
 
-    st.write("### Complex conjugate matrix (gcc)")
-    st.write(pd.DataFrame(gcc_matrix))
+        # Check if dimensions match for matrix multiplication
+        if v_matrix.shape[0] != g_matrix.shape[1] or v_matrix.shape[1] != g_matrix.shape[1]:
+            st.error("The dimensions of the V matrix do not match the required dimensions for multiplication.")
+        else:
+            # Compute Matrix Z
+            z_matrix = np.dot(np.dot(g_matrix, v_matrix), gcc_transpose)
 
-    st.write("### Transpose of gcc matrix")
-    st.write(pd.DataFrame(gcc_transpose))
+            # Display the computed matrices in the main app area
+            st.write("### g matrix")
+            st.write(pd.DataFrame(g_matrix))
+
+            st.write("### Complex conjugate matrix (gcc)")
+            st.write(pd.DataFrame(gcc_matrix))
+
+            st.write("### Transpose of gcc matrix")
+            st.write(pd.DataFrame(gcc_transpose))
+
+            st.write("### V matrix")
+            st.write(pd.DataFrame(v_matrix))
+
+            st.write("### Z matrix (G * V * Transpose(gcc))")
+            st.write(pd.DataFrame(z_matrix))
+    else:
+        st.error("Please upload the V matrix to compute Matrix Z.")
 
 # Main function to run the app (not strictly necessary for Streamlit, but good practice)
 if __name__ == "__main__":
