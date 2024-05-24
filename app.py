@@ -4,7 +4,7 @@ import streamlit as st
 # Function to compute the g matrix
 def compute_g_matrix(m, n, p, q, W):
     # Initialize the g matrix with zeros, with complex data type
-    g_matrix = np.zeros((m*n, p*q), dtype=complex)
+    g_matrix = np.zeros((m*p, n*q), dtype=complex)
     
     # Iterate through all combinations of indices to compute the g matrix elements
     for i in range(m):  # Loop over m
