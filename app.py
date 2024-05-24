@@ -1,40 +1,28 @@
 import numpy as np
 import streamlit as st
 
-# Function to compute the g matrix
+# Function to compute a single element of the g matrix
+def compute_g_element(m, n, p, q, W):
+    angle = 2 * np.pi / W * (p * m + q * n)  # Calculate the angle for the trigonometric functions
+    g_element = np.cos(angle) - 1j * np.sin(angle)  # Compute the complex value for the g matrix element
+    return g_element
+
+# Function to compute the g matrix (as a single-element matrix)
 def compute_g_matrix(m, n, p, q, W):
-    # Initialize the g matrix with zeros, with complex data type
-    g_matrix = np.zeros((m*p, n*q), dtype=complex)
-    
-    # Iterate through all combinations of indices to compute the g matrix elements
-    for i in range(m):  # Loop over m
-        for j in range(n):  # Loop over n
-            for k in range(p):  # Loop over p
-                for l in range(q):  # Loop over q
-                    # Compute the row index in the g matrix
-                    row = i * n + j
-                    # Compute the column index in the g matrix
-                    col = k * q + l
-                    # Calculate the angle for the trigonometric functions
-                    angle = 2 * np.pi / W * (k * (i + 1) + l * (j + 1))
-                    # Compute the complex value for the g matrix element
-                    g_matrix[row, col] = np.cos(angle) - 1j * np.sin(angle)
-    
-    # Return the computed g matrix
+    g_matrix = np.zeros((1, 1), dtype=complex)  # Initialize the g matrix with a single element
+    g_matrix[0, 0] = compute_g_element(m, n, p, q, W)  # Compute and assign the single element
     return g_matrix
 
 # Function to compute the complex conjugate of a matrix
 def compute_complex_conjugate(matrix):
-    # Use numpy's conjugate function to get the complex conjugate of the matrix
     return np.conjugate(matrix)
 
 # Function to compute the transpose of a matrix
 def compute_transpose(matrix):
-    # Use numpy's transpose function to get the transpose of the matrix
     return np.transpose(matrix)
 
 # Streamlit app setup
-st.title("Matrix Computation")  # Title of the Streamlit app
+st.title("Single Element Matrix Computation")  # Title of the Streamlit app
 
 # Sidebar for input parameters
 st.sidebar.header("Input Parameters")  # Header for the sidebar
