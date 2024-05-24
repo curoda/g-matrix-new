@@ -2,17 +2,22 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
+# Function to compute a single element of the g matrix
+def compute_g_element(m, n, p, q, W):
+    angle = 2 * np.pi / W * (p * m + q * n)  # Calculate the angle for the trigonometric functions
+    g_element = np.cos(angle) - 1j * np.sin(angle)  # Compute the complex value for the g matrix element
+    return g_element
+
 # Function to compute the g matrix for multiple sets of m, n, p, q values
-def compute_g_matrix(params, W):
-    num_rows = len(params)
-    num_cols = len(params)
+def compute_g_matrix(mn_params, pq_params, W):
+    num_rows = len(mn_params)
+    num_cols = len(pq_params)
     
     g_matrix = np.zeros((num_rows, num_cols), dtype=complex)
     
-    for col, (p, q) in enumerate(params):
-        for row, (m, n) in enumerate(params):
-            angle = 2 * np.pi / W * (p * m + q * n)
-            g_matrix[row, col] = np.cos(angle) - 1j * np.sin(angle)
+    for col, (p, q) in enumerate(pq_params):
+        for row, (m, n) in enumerate(mn_params):
+            g_matrix[row, col] = compute_g_element(m, n, p, q, W)
     
     return g_matrix
 
@@ -41,10 +46,13 @@ W = st.sidebar.number_input("Enter W:", min_value=1, value=3)  # Input for W
 if st.sidebar.button("Compute"):
     # Parse the input values
     param_lines = param_input.strip().split('\n')
-    params = [tuple(map(int, line.split())) for line in param_lines]
+    all_params = [tuple(map(int, line.split())) for line in param_lines]
+
+    mn_params = [(m, n) for m, n, _, _ in all_params]
+    pq_params = [(p, q) for _, _, p, q in all_params]
 
     # Compute the g matrix for all sets of parameters
-    g_matrix = compute_g_matrix(params, W)
+    g_matrix = compute_g_matrix(mn_params, pq_params, W)
 
     # Compute the complex conjugate and transpose for the g matrix
     gcc_matrix = compute_complex_conjugate(g_matrix)
