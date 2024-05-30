@@ -87,11 +87,16 @@ if st.sidebar.button("Compute"):
             real_pressure = np.real(pressure_column_vector)
             imag_pressure = np.imag(pressure_column_vector)
 
+            # Compute the arctan of the imaginary component over the real component
+            atan_matrix = np.arctan2(imag_pressure, real_pressure)
+
             # Combine into a DataFrame
             pressure_df = pd.DataFrame({
                 'Real': real_pressure.flatten(),
                 'Imaginary': imag_pressure.flatten()
             })
+
+            atan_df = pd.DataFrame(atan_matrix, columns=['ATAN'])
 
             # Display the computed matrices in the main app area
             st.write("### g matrix")
@@ -114,6 +119,9 @@ if st.sidebar.button("Compute"):
 
             st.write("### Pressure Column Vector (Z * Velocity)")
             st.write(pressure_df)
+
+            st.write("### ATAN (arctan(Imaginary / Real))")
+            st.write(atan_df)
     else:
         st.error("Please upload both the V matrix and the Velocity matrix to compute Matrix Z and the Pressure Column Vector.")
 
