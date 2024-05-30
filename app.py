@@ -91,13 +91,17 @@ if st.sidebar.button("Compute"):
             # Compute the arctan of the imaginary component over the real component
             atan_matrix = np.arctan2(imag_pressure, real_pressure)
 
-            # Combine into a DataFrame
+            # Compute the absolute value of the Pressure Column Vector
+            abs_pressure = np.abs(pressure_column_vector)
+
+            # Combine into DataFrames
             pressure_df = pd.DataFrame({
                 'Real': real_pressure.flatten(),
                 'Imaginary': imag_pressure.flatten()
             })
 
             atan_df = pd.DataFrame(atan_matrix, columns=['ATAN'])
+            abs_pressure_df = pd.DataFrame(abs_pressure, columns=['Absolute Pressure'])
 
             # Plot the ATAN values
             fig, ax = plt.subplots()
@@ -131,6 +135,9 @@ if st.sidebar.button("Compute"):
 
             st.write("### ATAN (arctan(Imaginary / Real))")
             st.write(atan_df)
+
+            st.write("### Absolute Pressure Column Vector")
+            st.write(abs_pressure_df)
     else:
         st.error("Please upload both the V matrix and the Velocity matrix to compute Matrix Z and the Pressure Column Vector.")
 
