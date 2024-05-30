@@ -83,6 +83,16 @@ if st.sidebar.button("Compute"):
             # Compute the Pressure Column Vector
             pressure_column_vector = np.dot(z_matrix, velocity_matrix)
 
+            # Separate the real and imaginary components
+            real_pressure = np.real(pressure_column_vector)
+            imag_pressure = np.imag(pressure_column_vector)
+
+            # Combine into a DataFrame
+            pressure_df = pd.DataFrame({
+                'Real': real_pressure.flatten(),
+                'Imaginary': imag_pressure.flatten()
+            })
+
             # Display the computed matrices in the main app area
             st.write("### g matrix")
             st.write(pd.DataFrame(g_matrix))
@@ -103,7 +113,7 @@ if st.sidebar.button("Compute"):
             st.write(pd.DataFrame(velocity_matrix))
 
             st.write("### Pressure Column Vector (Z * Velocity)")
-            st.write(pd.DataFrame(pressure_column_vector))
+            st.write(pressure_df)
     else:
         st.error("Please upload both the V matrix and the Velocity matrix to compute Matrix Z and the Pressure Column Vector.")
 
