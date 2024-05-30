@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import streamlit as st
+import matplotlib.pyplot as plt
 
 # Function to compute a single element of the g matrix
 def compute_g_element(m, n, p, q, W):
@@ -97,6 +98,14 @@ if st.sidebar.button("Compute"):
             })
 
             atan_df = pd.DataFrame(atan_matrix, columns=['ATAN'])
+
+            # Plot the ATAN values
+            fig, ax = plt.subplots()
+            ax.plot(atan_df.index, atan_df['ATAN'], marker='o')
+            ax.set_title('ATAN (arctan(Imaginary / Real))')
+            ax.set_xlabel('Index')
+            ax.set_ylabel('ATAN Value')
+            st.pyplot(fig)
 
             # Display the computed matrices in the main app area
             st.write("### g matrix")
