@@ -40,7 +40,7 @@ param_input = st.sidebar.text_area(
     "Enter m, n, p, q values (one set per line, separated by spaces):",
     "20 30 98 17\n24 29 96 28\n27 27 94 34\n29 24 91 42\n30 20 87 50\n29 16 83 56\n27 13 79 62\n24 11 74 67\n20 10 67 74\n16 11 62 79\n13 13 56 83\n11 16 50 87\n10 20 42 91\n11 24 34 94\n13 27 28 96\n16 29 17 98"
 )
-W = st.sidebar.number_input("Enter W:", min_value=1, value=3)  # Input for W
+W = st.sidebar.number_input("Enter W:", min_value=1, value=10000)  # Input for W
 
 # File uploader for the V matrix
 v_file = st.sidebar.file_uploader("Upload the V matrix (Excel file)", type=["xlsx"])
